@@ -3,13 +3,16 @@
 #include "src/hero/grade/ArcherClass.h"
 #include "src/hero/grade/MagClass.h"
 #include "src/hero/grade/AssassinClass.h"
+#include "Headers/ManagementSave.h"
+
+
 HeroClass Hero = HeroClass();
 
 
 #include <iostream>
 #include <windows.h>
 #include <string>
-#include "function.cpp"
+#include "Headers/function.h"
 #include "locations.cpp"
 #include "src/artifacts/ArtifactClass.h"
 #include "src/skills/SkillClass.h"
@@ -17,6 +20,18 @@ using namespace std;
 
 void registration(){
     string name = input_str("имя персонажа");
+    if (ManagementSave::checkSave(name))
+    {
+        if(choice("Хотите загрузить сохранение", list<string>{"Да", "Нет"})==1) {
+            string grade = ManagementSave::getGrade(name);
+            if (grade == "Воин") Hero = WarriorClass(name);
+            else if (grade == "Лучник") Hero = ArcherClass(name);
+            else if (grade == "Маг") Hero = MagClass(name);
+            else if (grade == "Ассасин") Hero = AssassinClass(name);
+            Hero.load(ManagementSave::getSave(name));
+            return;
+        }
+    }
     bool set_grade = true;
     while (set_grade){
         clear();
@@ -41,6 +56,7 @@ void registration(){
             case 3: Hero.setSkill(Hero.getAllSkillsGrade()[2]);set_skill=false;break;
         }
     }
+    Hero.spawn();
 }
 int main() {
     clear();
@@ -48,7 +64,6 @@ int main() {
     SetConsoleOutputCP(CP_UTF8);
     registration();
     clear();
-    Hero.spawn();
     locations::city();
     std::cout << Hero.getHeroName() << std::endl;
     std::cout << Hero.getHP() << std::endl;

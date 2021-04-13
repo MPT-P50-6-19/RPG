@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <string>
 #include <list>
+#include <vector>
 using namespace std;
 
 
@@ -25,21 +26,33 @@ void clear() {
     system("cls");
 //    string indent = "\n";
 //    cout << indent * 40;
-};
+}
+
+bool is_number(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
 
 int input_int(const string& name)
 {
-    int a;
+    string a;
+    int i;
     cout << "Введите число "+name+": ";
-    cin >> a;
-    return a;
+    while (true){
+        getline(cin, a);
+        if (is_number(a)){
+            return stoi(a);
+        }
+    }
 }
 
 string input_str(const string& name)
 {
     string a;
     cout << "Введите "+name+": ";
-    cin >> a;
+    getline(cin, a);
     return a;
 }
 
@@ -111,3 +124,12 @@ int randInt(int from, int before){
     return number;
 }
 
+bool sortLevel(vector<string> i1, vector<string> i2)
+{
+    return stoi(i1[1])>stoi(i2[1]);
+}
+
+bool sortGold(vector<string> i1, vector<string> i2)
+{
+    return stoi(i1[2])>stoi(i2[2]);
+}
